@@ -29,8 +29,13 @@ const summarize = (desc, txt, threshold, maxlen) => { // eslint-disable-line
     : truncate(txt, maxlen).replace(/\n/g, ' ')
 }
 
+// ! inputHtml: html 字符串
+// ! inputUrl:  请求的 url
+// ! parserOptions: 选项
 export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
+  // ! 净化 html
   const html = purify(inputHtml)
+
   const meta = extractMetaData(html)
   let title = meta.title
 

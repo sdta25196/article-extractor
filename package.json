@@ -31,7 +31,8 @@
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage=true",
     "build": "node build",
     "eval": "node eval",
-    "reset": "node reset"
+    "reset": "node reset",
+    "start": "node test/index.js"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.3",
