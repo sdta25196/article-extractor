@@ -14,11 +14,10 @@ const url = 'https://xsxy.nju.edu.cn/jyjx/rcpy/20201126/i170797.html'
 // const url = 'https://physics.nju.edu.cn/xwgg/qnjssl/20230316/i240330.html'
 
 try {
-  const article = await extract(url, {
+  const data = await extract(url, {
     contentLengthThreshold: 20,
   })
-  // ! title 是直接拿了title标签，这个不太合适啊。
-  console.log(article)
+  console.log(data)
 } catch (err) {
   console.error("出错了：", err)
 }
