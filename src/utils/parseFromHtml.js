@@ -73,37 +73,37 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
   }
 
   // gather urls to choose the best url later
-  // 国内站点，基本上这里一定是 inputUrl // TODO ！！23-4-7
+  // 国内站点，基本上这里一定是 inputUrl
   const links = unique(
     [url, shortlink, amphtml, canonical, inputUrl]
-      .filter(isValidUrl)
-      .map(purifyUrl)
+      .filter(isValidUrl) // 过滤 http 域名
+      .map(purifyUrl)  // ! 净化url. 删除参数、hash等无用数据
   )
-
-  console.log(links) // ! 23-4-7 看到这里
 
   if (!links.length) {
     return null
   }
 
   // choose the best url, which one looks like title the most
+  // ! 老外的title通常会拼写在域名中，所以可以使用域名和title对比的方式确定最好的域名。国内站点不适用
   const bestUrl = chooseBestUrl(links, title)
 
+  // 搞一个组合函数，用来处理html - 找到content
   const fns = pipe(
     (input) => {
-      return normalizeUrls(input, bestUrl)
+      return normalizeUrls(input, bestUrl) // 处理掉相对地址
     },
     (input) => {
-      return execPreParser(input, links)
+      return execPreParser(input, links) // 执行预解析 - 未设置 Transformations 的话，这里什么都没做
     },
     (input) => {
-      return extractWithReadability(input, bestUrl)
+      return extractWithReadability(input, bestUrl) // 使用 Readability 提取文章
     },
     (input) => {
-      return input ? execPostParser(input, links) : null
+      return input ? execPostParser(input, links) : null // 执行转换的文章解析 - 未设置 Transformations 的话，这里什么都没做
     },
     (input) => {
-      return input ? cleanify(input) : null
+      return input ? cleanify(input) : null // 处理html字符串的空白符
     }
   )
 
@@ -114,6 +114,8 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
   }
 
   const textContent = stripTags(content)
+
+  // 字数限制，小于指定字数就不算
   if (textContent.length < contentLengthThreshold) {
     return null
   }

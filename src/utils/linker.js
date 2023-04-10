@@ -109,6 +109,7 @@ export const purify = (url) => {
 export const normalize = (html, url) => {
   const doc = new DOMParser().parseFromString(html, 'text/html')
 
+  // 处理a标签的相对路径，并且改成新页面打开
   Array.from(doc.getElementsByTagName('a')).forEach((element) => {
     const href = element.getAttribute('href')
     if (href) {
@@ -117,13 +118,14 @@ export const normalize = (html, url) => {
     }
   })
 
+  // 处理img标签
   Array.from(doc.getElementsByTagName('img')).forEach((element) => {
     const src = element.getAttribute('data-src') ?? element.getAttribute('src')
     if (src) {
       element.setAttribute('src', absolutify(url, src))
     }
   })
-
+  // 重新格式化一下html字符串
   return Array.from(doc.children).map(element => element.outerHTML).join('')
 }
 
